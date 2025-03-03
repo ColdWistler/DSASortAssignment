@@ -29,8 +29,8 @@ Installation & Setup
 
 1. Clone the Repository
 
-git clone https://github.com/yourusername/sorting-searching-app.git
-cd sorting-searching-app
+git clone https://github.com/ColdWistler/DSASortAssignment
+cd DSASortAssignment
 
 2. Build the Project
 
