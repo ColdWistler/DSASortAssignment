@@ -27,10 +27,10 @@ CMake (optional but recommended for builds)
 Installation & Setup
 
 1. Clone the Repository
-
+```
 git clone https://github.com/yourusername/sorting-searching-app.git
 cd sorting-searching-app
-
+```
 2. Build the Project
 
 Using Qt Creator:
@@ -42,18 +42,18 @@ Configure the project with an appropriate Qt kit.
 Click Build → Run or press Ctrl + R.
 
 Using Terminal (qmake):
-
+```
 qmake SortingSearchingApp.pro
 make
 ./SortingSearchingApp
-
+```
 Using CMake (optional alternative):
-
+```
 mkdir build && cd build
 cmake ..
 make
 ./SortingSearchingApp
-
+```
 Usage
 
 Enter numbers in the input field (comma-separated).
@@ -67,14 +67,14 @@ Enter a number and click Binary Search to search for it.
 Results are displayed in the text area.
 
 File Structure
-
+```
 ├── sortingsearchingapp.h    # Class declaration
 ├── sortingsearchingapp.cpp  # Class implementation
 ├── main.cpp                 # Entry point
 ├── SortingSearchingApp.pro  # Qt project file
 ├── README.md                # Documentation
 └── assets/                  # (Optional) Icons, screenshots
-
+```
 Contribution
 
 Feel free to fork and contribute by submitting a pull request.
