@@ -1,10 +1,10 @@
-Sorting & Searching Application
+#Sorting & Searching Application
 
 Overview
 
 This is a Qt-based C++ application that allows users to perform sorting and searching operations on a list of numbers. It provides a graphical user interface (GUI) for an intuitive user experience.
 
-Features
+#Features
 
 Generate Random Numbers: Creates a list of random numbers.
 
@@ -14,7 +14,7 @@ Binary Search: Searches for a user-specified number using the binary search algo
 
 User-Friendly GUI: Built using Qt for an interactive experience.
 
-Requirements
+#Requirements
 
 To run this project, you need:
 
@@ -24,7 +24,7 @@ C++ Compiler (GCC, Clang, or MSVC)
 
 CMake (optional but recommended for builds)
 
-Installation & Setup
+#Installation & Setup
 
 1. Clone the Repository
 ```
