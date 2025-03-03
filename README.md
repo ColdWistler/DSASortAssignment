@@ -1,4 +1,3 @@
-# DSASortAssignment
 Sorting & Searching Application
 
 Overview
@@ -29,8 +28,8 @@ Installation & Setup
 
 1. Clone the Repository
 
-$git clone https://github.com/ColdWistler/DSASortAssignment
-$cd DSASortAssignment
+git clone https://github.com/yourusername/sorting-searching-app.git
+cd sorting-searching-app
 
 2. Build the Project
 
@@ -44,16 +43,16 @@ Click Build → Run or press Ctrl + R.
 
 Using Terminal (qmake):
 
-$qmake SortingSearchingApp.pro
-$make
-$./SortingSearchingApp
+qmake SortingSearchingApp.pro
+make
+./SortingSearchingApp
 
 Using CMake (optional alternative):
 
-$mkdir build && cd build
-$cmake ..
-$make
-$./SortingSearchingApp
+mkdir build && cd build
+cmake ..
+make
+./SortingSearchingApp
 
 Usage
 
@@ -83,3 +82,4 @@ Feel free to fork and contribute by submitting a pull request.
 License
 
 This project is licensed under the MIT License.
+
