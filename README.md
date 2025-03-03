@@ -29,8 +29,8 @@ Installation & Setup
 
 1. Clone the Repository
 
-git clone https://github.com/ColdWistler/DSASortAssignment
-cd DSASortAssignment
+$git clone https://github.com/ColdWistler/DSASortAssignment
+$cd DSASortAssignment
 
 2. Build the Project
 
@@ -44,16 +44,16 @@ Click Build → Run or press Ctrl + R.
 
 Using Terminal (qmake):
 
-qmake SortingSearchingApp.pro
-make
-./SortingSearchingApp
+$qmake SortingSearchingApp.pro
+$make
+$./SortingSearchingApp
 
 Using CMake (optional alternative):
 
-mkdir build && cd build
-cmake ..
-make
-./SortingSearchingApp
+$mkdir build && cd build
+$cmake ..
+$make
+$./SortingSearchingApp
 
 Usage
 
