@@ -15,6 +15,17 @@ vector<int> generateRandomNumbers(int N) {
     return numbers;
 }
 
+// Function to display numbers
+void displayNumbers(const vector<int>& numbers, const string& message) {
+    cout << "\n==================================\n";
+    cout << message << "\n";
+    cout << "==================================\n";
+    for (int num : numbers) {
+        cout << num << " ";
+    }
+    cout << "\n";
+}
+
 // Binary Search
 int binarySearch(const vector<int>& arr, int key) {
     int left = 0, right = arr.size() - 1;
@@ -83,30 +94,38 @@ void measureExecutionTime() {
     cout << "Enter the number of elements: ";
     cin >> N;
     vector<int> numbers = generateRandomNumbers(N);
+    displayNumbers(numbers, "Generated Numbers");
+    
     vector<int> sortedNumbers = numbers;
     sort(sortedNumbers.begin(), sortedNumbers.end());
+    displayNumbers(sortedNumbers, "Sorted Numbers");
 
     int searchKey;
     cout << "Enter number to search: ";
     cin >> searchKey;
 
+    cout << "\n=========== SEARCH RESULTS ===========\n";
     // Measure Binary Search
     auto start = high_resolution_clock::now();
-    binarySearch(sortedNumbers, searchKey);
+    int binaryResult = binarySearch(sortedNumbers, searchKey);
     auto stop = high_resolution_clock::now();
     cout << "Binary Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Binary Search Result: " << (binaryResult != -1 ? "Found" : "Not Found") << "\n";
 
     // Measure Interpolation Search
     start = high_resolution_clock::now();
-    interpolationSearch(sortedNumbers, searchKey);
+    int interpolationResult = interpolationSearch(sortedNumbers, searchKey);
     stop = high_resolution_clock::now();
     cout << "Interpolation Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Interpolation Search Result: " << (interpolationResult != -1 ? "Found" : "Not Found") << "\n";
 
+    cout << "\n=========== SORTING RESULTS ===========\n";
     // Measure Selection Sort
     vector<int> tempNumbers = numbers;
     start = high_resolution_clock::now();
     selectionSort(tempNumbers);
     stop = high_resolution_clock::now();
+    displayNumbers(tempNumbers, "Selection Sorted Numbers");
     cout << "Selection Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
 
     // Measure Merge Sort
@@ -114,6 +133,7 @@ void measureExecutionTime() {
     start = high_resolution_clock::now();
     mergeSort(tempNumbers, 0, tempNumbers.size() - 1);
     stop = high_resolution_clock::now();
+    displayNumbers(tempNumbers, "Merge Sorted Numbers");
     cout << "Merge Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
 }
 
