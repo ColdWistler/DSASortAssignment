@@ -1,90 +1,120 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <chrono>
-
 using namespace std;
 using namespace std::chrono;
 
-// Function to generate N random numbers
-vector<int> generateRandomNumbers(int N) {
-    vector<int> numbers(N);
+// Node structure for Doubly Linked List
+struct Node {
+    int data;
+    Node* next;
+    Node* prev;
+    Node(int val) : data(val), next(nullptr), prev(nullptr) {}
+};
+
+// Doubly Linked List class
+class DoublyLinkedList {
+public:
+    Node* head;
+    Node* tail;
+
+    DoublyLinkedList() : head(nullptr), tail(nullptr) {}
+
+    // Insert a new node at the end
+    void insert(int val) {
+        Node* newNode = new Node(val);
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+    }
+
+    // Display the list
+    void display(const string& message) {
+        cout << "\n==================================\n";
+        cout << message << "\n";
+        cout << "==================================\n";
+        Node* temp = head;
+        while (temp) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << "\n";
+    }
+
+    // Selection Sort
+    void selectionSort() {
+        for (Node* i = head; i && i->next; i = i->next) {
+            Node* minNode = i;
+            for (Node* j = i->next; j; j = j->next) {
+                if (j->data < minNode->data)
+                    minNode = j;
+            }
+            swap(i->data, minNode->data);
+        }
+    }
+
+    // Merge Sort Helper
+    Node* merge(Node* first, Node* second) {
+        if (!first) return second;
+        if (!second) return first;
+
+        if (first->data < second->data) {
+            first->next = merge(first->next, second);
+            first->next->prev = first;
+            first->prev = nullptr;
+            return first;
+        } else {
+            second->next = merge(first, second->next);
+            second->next->prev = second;
+            second->prev = nullptr;
+            return second;
+        }
+    }
+
+    // Split linked list into two halves
+    Node* split(Node* head) {
+        Node* fast = head, * slow = head;
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        Node* temp = slow->next;
+        slow->next = nullptr;
+        return temp;
+    }
+
+    // Merge Sort
+    Node* mergeSort(Node* node) {
+        if (!node || !node->next) return node;
+        Node* second = split(node);
+        return merge(mergeSort(node), mergeSort(second));
+    }
+
+    void sortWithMergeSort() {
+        head = mergeSort(head);
+        Node* temp = head;
+        while (temp->next) temp = temp->next;
+        tail = temp;
+    }
+
+    // Search for a key
+    bool search(int key) {
+        Node* temp = head;
+        while (temp) {
+            if (temp->data == key) return true;
+            temp = temp->next;
+        }
+        return false;
+    }
+};
+
+// Function to generate random numbers
+void generateRandomNumbers(DoublyLinkedList& list, int N) {
     for (int i = 0; i < N; i++) {
-        numbers[i] = rand() % 1000; // Random numbers between 0 and 999
-    }
-    return numbers;
-}
-
-// Function to display numbers
-void displayNumbers(const vector<int>& numbers, const string& message) {
-    cout << "\n==================================\n";
-    cout << message << "\n";
-    cout << "==================================\n";
-    for (int num : numbers) {
-        cout << num << " ";
-    }
-    cout << "\n";
-}
-
-// Binary Search
-int binarySearch(const vector<int>& arr, int key) {
-    int left = 0, right = arr.size() - 1;
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (arr[mid] == key) return mid;
-        else if (arr[mid] < key) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
-
-// Interpolation Search
-int interpolationSearch(const vector<int>& arr, int key) {
-    int low = 0, high = arr.size() - 1;
-    while (low <= high && key >= arr[low] && key <= arr[high]) {
-        if (low == high) {
-            if (arr[low] == key) return low;
-            return -1;
-        }
-        int pos = low + ((double)(high - low) / (arr[high] - arr[low]) * (key - arr[low]));
-        if (arr[pos] == key) return pos;
-        if (arr[pos] < key) low = pos + 1;
-        else high = pos - 1;
-    }
-    return -1;
-}
-
-// Selection Sort
-void selectionSort(vector<int>& arr) {
-    int n = arr.size();
-    for (int i = 0; i < n - 1; i++) {
-        int minIdx = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIdx]) minIdx = j;
-        }
-        swap(arr[i], arr[minIdx]);
-    }
-}
-
-// Merge function for Merge Sort
-void merge(vector<int>& arr, int left, int mid, int right) {
-    int n1 = mid - left + 1, n2 = right - mid;
-    vector<int> L(n1), R(n2);
-    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
-    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
-    int i = 0, j = 0, k = left;
-    while (i < n1 && j < n2) arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
-}
-
-// Merge Sort
-void mergeSort(vector<int>& arr, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-        mergeSort(arr, left, mid);
-        mergeSort(arr, mid + 1, right);
-        merge(arr, left, mid, right);
+        list.insert(rand() % 1000);
     }
 }
 
@@ -93,48 +123,33 @@ void measureExecutionTime() {
     int N;
     cout << "Enter the number of elements: ";
     cin >> N;
-    vector<int> numbers = generateRandomNumbers(N);
-    displayNumbers(numbers, "Generated Numbers");
-    
-    vector<int> sortedNumbers = numbers;
-    sort(sortedNumbers.begin(), sortedNumbers.end());
-    displayNumbers(sortedNumbers, "Sorted Numbers");
+    DoublyLinkedList list;
+    generateRandomNumbers(list, N);
+    list.display("Generated Numbers");
 
+    cout << "\n=========== SORTING RESULTS ===========\n";
+    auto start = high_resolution_clock::now();
+    list.selectionSort();
+    auto stop = high_resolution_clock::now();
+    list.display("Selection Sorted Numbers");
+    cout << "Selection Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+
+    generateRandomNumbers(list, N);
+    start = high_resolution_clock::now();
+    list.sortWithMergeSort();
+    stop = high_resolution_clock::now();
+    list.display("Merge Sorted Numbers");
+    cout << "Merge Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+
+    cout << "\n=========== SEARCH RESULTS ===========\n";
     int searchKey;
     cout << "Enter number to search: ";
     cin >> searchKey;
-
-    cout << "\n=========== SEARCH RESULTS ===========\n";
-    // Measure Binary Search
-    auto start = high_resolution_clock::now();
-    int binaryResult = binarySearch(sortedNumbers, searchKey);
-    auto stop = high_resolution_clock::now();
-    cout << "Binary Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
-    cout << "Binary Search Result: " << (binaryResult != -1 ? "Found" : "Not Found") << "\n";
-
-    // Measure Interpolation Search
     start = high_resolution_clock::now();
-    int interpolationResult = interpolationSearch(sortedNumbers, searchKey);
+    bool found = list.search(searchKey);
     stop = high_resolution_clock::now();
-    cout << "Interpolation Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
-    cout << "Interpolation Search Result: " << (interpolationResult != -1 ? "Found" : "Not Found") << "\n";
-
-    cout << "\n=========== SORTING RESULTS ===========\n";
-    // Measure Selection Sort
-    vector<int> tempNumbers = numbers;
-    start = high_resolution_clock::now();
-    selectionSort(tempNumbers);
-    stop = high_resolution_clock::now();
-    displayNumbers(tempNumbers, "Selection Sorted Numbers");
-    cout << "Selection Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
-
-    // Measure Merge Sort
-    tempNumbers = numbers;
-    start = high_resolution_clock::now();
-    mergeSort(tempNumbers, 0, tempNumbers.size() - 1);
-    stop = high_resolution_clock::now();
-    displayNumbers(tempNumbers, "Merge Sorted Numbers");
-    cout << "Merge Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Search Result: " << (found ? "Found" : "Not Found") << "\n";
 }
 
 int main() {
