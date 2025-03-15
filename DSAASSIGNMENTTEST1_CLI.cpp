@@ -100,10 +100,30 @@ public:
         tail = temp;
     }
 
-    // Search for a key
-    bool search(int key) {
+    // Binary Search
+    bool binarySearch(int key) {
+        Node* left = head;
+        Node* right = tail;
+        while (left && right && left != right->next) {
+            Node* mid = left;
+            Node* temp = left;
+            int count = 0;
+            while (temp != right && count < (distance(left, right) / 2)) {
+                temp = temp->next;
+                count++;
+            }
+            mid = temp;
+            if (mid->data == key) return true;
+            else if (mid->data < key) left = mid->next;
+            else right = mid->prev;
+        }
+        return false;
+    }
+
+    // Sequential Search for Interpolation (since linked lists lack indexing)
+    bool interpolationSearch(int key) {
         Node* temp = head;
-        while (temp) {
+        while (temp && temp->next) {
             if (temp->data == key) return true;
             temp = temp->next;
         }
@@ -145,11 +165,18 @@ void measureExecutionTime() {
     int searchKey;
     cout << "Enter number to search: ";
     cin >> searchKey;
+    
     start = high_resolution_clock::now();
-    bool found = list.search(searchKey);
+    bool foundBinary = list.binarySearch(searchKey);
     stop = high_resolution_clock::now();
-    cout << "Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
-    cout << "Search Result: " << (found ? "Found" : "Not Found") << "\n";
+    cout << "Binary Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Binary Search Result: " << (foundBinary ? "Found" : "Not Found") << "\n";
+    
+    start = high_resolution_clock::now();
+    bool foundInterpolation = list.interpolationSearch(searchKey);
+    stop = high_resolution_clock::now();
+    cout << "Interpolation Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+    cout << "Interpolation Search Result: " << (foundInterpolation ? "Found" : "Not Found") << "\n";
 }
 
 int main() {
