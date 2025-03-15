@@ -1,153 +1,123 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <vector>
+#include <algorithm>
 #include <chrono>
-#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
 
-struct ComplexData {
-    int id;
-    string name;
-    double value;
-};
-
-struct Node {
-    ComplexData data;
-    Node* next;
-    Node* prev;
-};
-
-void insert(Node*& head, ComplexData value) {
-    Node* newNode = new Node();
-    newNode->data = value;
-
-    if (head == nullptr) {
-        head = newNode;
-        head->next = head;
-        head->prev = head;
-    } else {
-        Node* last = head->prev;
-        last->next = newNode;
-        newNode->prev = last;
-        newNode->next = head;
-        head->prev = newNode;
+// Function to generate N random numbers
+vector<int> generateRandomNumbers(int N) {
+    vector<int> numbers(N);
+    for (int i = 0; i < N; i++) {
+        numbers[i] = rand() % 1000; // Random numbers between 0 and 999
     }
+    return numbers;
 }
 
-void printList(Node* head) {
-    if (head == nullptr) {
-        cout << "List is empty." << endl;
-        return;
+// Binary Search
+int binarySearch(const vector<int>& arr, int key) {
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == key) return mid;
+        else if (arr[mid] < key) left = mid + 1;
+        else right = mid - 1;
     }
-    Node* temp = head;
-    do {
-        cout << "ID: " << temp->data.id << ", Name: " << temp->data.name << ", Value: " << temp->data.value << endl;
-        temp = temp->next;
-    } while (temp != head);
+    return -1;
 }
 
-void selectionSort(Node*& head) {
-    if (head == nullptr) return;
-    Node* temp = head;
-    do {
-        Node* minNode = temp;
-        Node* r = temp->next;
-        while (r != head) {
-            if (minNode->data.id > r->data.id) {
-                minNode = r;
-            }
-            r = r->next;
+// Interpolation Search
+int interpolationSearch(const vector<int>& arr, int key) {
+    int low = 0, high = arr.size() - 1;
+    while (low <= high && key >= arr[low] && key <= arr[high]) {
+        if (low == high) {
+            if (arr[low] == key) return low;
+            return -1;
         }
-        swap(temp->data, minNode->data);
-        temp = temp->next;
-    } while (temp != head);
-}
-
-void split(Node* head, Node*& firstHalf, Node*& secondHalf) {
-    if (!head || head->next == head) return;
-    Node* slow = head;
-    Node* fast = head->next;
-    while (fast != head && fast->next != head) {
-        slow = slow->next;
-        fast = fast->next->next;
+        int pos = low + ((double)(high - low) / (arr[high] - arr[low]) * (key - arr[low]));
+        if (arr[pos] == key) return pos;
+        if (arr[pos] < key) low = pos + 1;
+        else high = pos - 1;
     }
-    firstHalf = head;
-    secondHalf = slow->next;
-    slow->next = firstHalf;
-    firstHalf->prev = slow;
-    Node* last = secondHalf;
-    while (last->next != head) last = last->next;
-    last->next = secondHalf;
-    secondHalf->prev = last;
+    return -1;
 }
 
-Node* merge(Node* first, Node* second) {
-    if (!first) return second;
-    if (!second) return first;
-    if (first->data.id <= second->data.id) {
-        first->next = merge(first->next, second);
-        first->next->prev = first;
-        return first;
-    } else {
-        second->next = merge(first, second->next);
-        second->next->prev = second;
-        return second;
+// Selection Sort
+void selectionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) minIdx = j;
+        }
+        swap(arr[i], arr[minIdx]);
     }
 }
 
-void mergeSort(Node*& head) {
-    if (!head || head->next == head) return;
-    Node* firstHalf = nullptr;
-    Node* secondHalf = nullptr;
-    split(head, firstHalf, secondHalf);
-    mergeSort(firstHalf);
-    mergeSort(secondHalf);
-    head = merge(firstHalf, secondHalf);
+// Merge function for Merge Sort
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1, n2 = right - mid;
+    vector<int> L(n1), R(n2);
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
 }
 
-Node* binarySearch(Node* head, int key) {
-    Node* start = head;
-    Node* end = head->prev;
-    while (start != end) {
-        Node* mid = start;
-        for (Node* temp = start; temp != end; temp = temp->next) mid = mid->next;
-        if (mid->data.id == key) return mid;
-        else if (mid->data.id < key) start = mid->next;
-        else end = mid->prev;
+// Merge Sort
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
     }
-    return start->data.id == key ? start : nullptr;
 }
 
-long long measureTime(void (*func)(Node*&), Node*& head) {
+// Function to measure execution time
+void measureExecutionTime() {
+    int N;
+    cout << "Enter the number of elements: ";
+    cin >> N;
+    vector<int> numbers = generateRandomNumbers(N);
+    vector<int> sortedNumbers = numbers;
+    sort(sortedNumbers.begin(), sortedNumbers.end());
+
+    int searchKey;
+    cout << "Enter number to search: ";
+    cin >> searchKey;
+
+    // Measure Binary Search
     auto start = high_resolution_clock::now();
-    func(head);
+    binarySearch(sortedNumbers, searchKey);
     auto stop = high_resolution_clock::now();
-    return duration_cast<milliseconds>(stop - start).count();
-}
+    cout << "Binary Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
 
-void analyzeAlgorithms(Node*& head, int N) {
-    cout << "\nAlgorithm Performance Analysis" << endl;
-    cout << "----------------------------------------------------" << endl;
-    cout << setw(25) << left << "Algorithm" << setw(15) << "Time (ms)" << endl;
-    cout << "----------------------------------------------------" << endl;
-    Node* tempHead = head;
-    long long selectionSortTime = measureTime(selectionSort, tempHead);
-    cout << setw(25) << left << "Selection Sort" << setw(15) << selectionSortTime << endl;
-    long long mergeSortTime = measureTime(mergeSort, tempHead);
-    cout << setw(25) << left << "Merge Sort" << setw(15) << mergeSortTime << endl;
+    // Measure Interpolation Search
+    start = high_resolution_clock::now();
+    interpolationSearch(sortedNumbers, searchKey);
+    stop = high_resolution_clock::now();
+    cout << "Interpolation Search Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+
+    // Measure Selection Sort
+    vector<int> tempNumbers = numbers;
+    start = high_resolution_clock::now();
+    selectionSort(tempNumbers);
+    stop = high_resolution_clock::now();
+    cout << "Selection Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
+
+    // Measure Merge Sort
+    tempNumbers = numbers;
+    start = high_resolution_clock::now();
+    mergeSort(tempNumbers, 0, tempNumbers.size() - 1);
+    stop = high_resolution_clock::now();
+    cout << "Merge Sort Time: " << duration_cast<microseconds>(stop - start).count() << " microseconds\n";
 }
 
 int main() {
-    Node* head = nullptr;
-    int N;
-    cout << "Enter the number of random data items (N): ";
-    cin >> N;
-    generateRandomData(head, N);
-    cout << "Generated List: " << endl;
-    printList(head);
-    analyzeAlgorithms(head, N);
-    deleteList(head);
+    measureExecutionTime();
     return 0;
 }
