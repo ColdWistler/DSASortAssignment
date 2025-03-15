@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
@@ -96,6 +97,26 @@ void generateRandomData(Node*& head, int N) {
     }
 }
 
+long long measureTime(void (*func)(Node*&), Node*& head) {
+    auto start = high_resolution_clock::now();
+    func(head);
+    auto stop = high_resolution_clock::now();
+    return duration_cast<milliseconds>(stop - start).count();
+}
+
+void analyzeAlgorithms(Node*& head, int N) {
+    cout << "\nAlgorithm Performance Analysis" << endl;
+    cout << "--------------------------------------" << endl;
+    cout << setw(20) << left << "Algorithm" << setw(15) << "Time (ms)" << endl;
+    cout << "--------------------------------------" << endl;
+    
+    long long selectionSortTime = measureTime(selectionSort, head);
+    cout << setw(20) << left << "Selection Sort" << setw(15) << selectionSortTime << endl;
+    
+    cout << "\nTime Complexity Analysis:" << endl;
+    cout << "Selection Sort: Best - O(N^2), Average - O(N^2), Worst - O(N^2)" << endl;
+}
+
 int main() {
     Node* head = nullptr;
     int N;
@@ -104,9 +125,7 @@ int main() {
     generateRandomData(head, N);
     cout << "Generated List: " << endl;
     printList(head);
-    cout << "Sorting using Selection Sort..." << endl;
-    selectionSort(head);
-    printList(head);
+    analyzeAlgorithms(head, N);
     int key;
     cout << "Enter the ID to search: ";
     cin >> key;
@@ -119,4 +138,3 @@ int main() {
     deleteList(head);
     return 0;
 }
-
